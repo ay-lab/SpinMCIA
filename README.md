@@ -6,8 +6,17 @@ This repository contains the source code, execution scripts, and downstream anal
 
 ## 1. Installation
 
-We highly recommend using a virtual environment (e.g., `conda` or `venv`). To install the required dependencies, run:
+We highly recommend using `conda` to create an isolated virtual environment for SpinMCIA. This ensures all dependencies are managed cleanly.
 
+    # Create and activate a new conda environment (Python 3.9+ recommended)
+    conda create -n spinmcia_env python=3.9 -y
+    conda activate spinmcia_env
+    
+    # Clone the repository
+    git clone https://github.com/[your-username]/SpinMCIA.git
+    cd SpinMCIA
+    
+    # Install the required dependencies
     pip install -r requirements.txt
 
 ## 2. Data Availability
