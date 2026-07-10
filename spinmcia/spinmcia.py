@@ -223,7 +223,6 @@ def nipals_multiblock(data_blocks, col_preproc_method="colprofile",
         else:
             data_blocks = [deflate_block_gs(df, res['global_scores']) for df in data_blocks]
 
-
         res = nipals_iter(data_blocks, tol=tol, maxIter=max_iter)
         if res['global_scores'] is None:
             break
@@ -250,13 +249,22 @@ def nipals_multiblock(data_blocks, col_preproc_method="colprofile",
                         block_vars, metadata)
 
 ###############################################################################
-# Main: parse arbitrary N modalities
+# Main: Parse arbitrary N modalities (or legacy 2 modalities)
 ###############################################################################
 def main():
     parser = argparse.ArgumentParser(description="Run N-modality Nipals MCIA pipeline.")
-    parser.add_argument("--input_files", nargs='+', required=True, help="List of .h5ad or .csv files in order")
-    parser.add_argument("--modality_names", nargs='+', required=True, help="List of names for each modality")
-    parser.add_argument("--thresholds", nargs='+', type=float, default=None, help="Sparsity thresholds (1.0 for no threshold)")
+    
+    # N-Modality arguments
+    parser.add_argument("--input_files", nargs='+', default=None, help="List of .h5ad or .csv files in order")
+    parser.add_argument("--modality_names", nargs='+', default=None, help="List of names for each modality")
+    
+    # Backward compatibility arguments
+    parser.add_argument("--sc_hic_h5ad_input_file", default=None, help="Path to scHi-C .h5ad file")
+    parser.add_argument("--second_modality_h5ad_input_file", default=None, help="Path to second modality .h5ad file")
+    parser.add_argument("--second_modality_name", default="SecondModality", help="Name for the second modality")
+    
+    # General arguments
+    parser.add_argument("--thresholds", nargs='+', type=float, default=None, help="Sparsity thresholds")
     parser.add_argument("--output_folder", required=True)
     parser.add_argument("--metadata_file", default=None)
     parser.add_argument("--col_preproc_method", default="colprofile")
@@ -265,19 +273,32 @@ def main():
     parser.add_argument("--tol", type=float, default=1e-9)
     parser.add_argument("--max_iter", type=int, default=5000)
     parser.add_argument("--deflationMethod", default="block")
+    parser.add_argument("--mode", default="dense", help="Legacy argument (ignored)")
+    parser.add_argument("--assume_same_order", action="store_true", help="Legacy argument (ignored, alignment is automatic)")
     args = parser.parse_args()
 
-    if len(args.input_files) != len(args.modality_names):
-        print_flush("[ERROR] Number of --input_files must match --modality_names")
+    # Determine input files and names
+    if args.input_files and args.modality_names:
+        input_files = args.input_files
+        modality_names = args.modality_names
+    elif args.sc_hic_h5ad_input_file and args.second_modality_h5ad_input_file:
+        input_files = [args.sc_hic_h5ad_input_file, args.second_modality_h5ad_input_file]
+        modality_names = ["HiC", args.second_modality_name]
+    else:
+        print_flush("[ERROR] You must provide either (--input_files AND --modality_names) OR (--sc_hic_h5ad_input_file AND --second_modality_h5ad_input_file)")
+        sys.exit(1)
+
+    if len(input_files) != len(modality_names):
+        print_flush("[ERROR] Number of input files must match number of modality names.")
         sys.exit(1)
 
     os.makedirs(args.output_folder, exist_ok=True)
     data_blocks = []
 
     # 1. Load Data
-    for i in range(len(args.input_files)):
-        file_path = args.input_files[i]
-        mod_name = args.modality_names[i]
+    for i in range(len(input_files)):
+        file_path = input_files[i]
+        mod_name = modality_names[i]
         df = load_data(file_path)
         df.name = mod_name
         data_blocks.append(df)
@@ -287,12 +308,10 @@ def main():
     print_flush("[Main] STARTING STRICT CELL ALIGNMENT")
     print_flush("[Main] =========================================")
     
-    # Get the intersection of all cell IDs across all modalities
     common_cells = data_blocks[0].index
     for i in range(1, len(data_blocks)):
         common_cells = common_cells.intersection(data_blocks[i].index)
     
-    # Sort them alphabetically to guarantee exact array ordering
     common_cells = common_cells.sort_values()
     print_flush(f"[Main] Found {len(common_cells)} perfectly matching cells across all {len(data_blocks)} modalities.")
     
@@ -300,17 +319,11 @@ def main():
         print_flush("[ERROR] Zero common cells found! Check your cell IDs (obs_names).")
         sys.exit(1)
 
-    # Sub-select and Re-order every dataframe to match the master list
     for i in range(len(data_blocks)):
         original_size = data_blocks[i].shape[0]
-        mod_name = args.modality_names[i]
-        
-        # Subset to common cells (creates a new DataFrame)
+        mod_name = modality_names[i]
         data_blocks[i] = data_blocks[i].loc[common_cells]
-        
-        # Re-attach the name to the new DataFrame!
         data_blocks[i].name = mod_name 
-        
         print_flush(f"   -> {mod_name} resized from {original_size} to {data_blocks[i].shape[0]} cells.")
     print_flush("[Main] Alignment Complete.\n")
 
@@ -336,7 +349,7 @@ def main():
     # 4. Save Outputs
     result.global_scores.to_csv(os.path.join(args.output_folder, "global_scores.csv"))
     result.global_loadings.to_csv(os.path.join(args.output_folder, "global_loadings.csv"))
-    pd.DataFrame(result.block_score_weights, index=args.modality_names, columns=result.global_scores.columns).to_csv(os.path.join(args.output_folder, "block_score_weights.csv"))
+    pd.DataFrame(result.block_score_weights, index=modality_names, columns=result.global_scores.columns).to_csv(os.path.join(args.output_folder, "block_score_weights.csv"))
     pd.DataFrame(result.eigvals, index=result.global_scores.columns, columns=["Eigenvalue"]).to_csv(os.path.join(args.output_folder, "eigvals.csv"))
     pd.DataFrame.from_dict(result.block_variances, orient="index", columns=["Variance"]).to_csv(os.path.join(args.output_folder, "block_variances.csv"))
 

@@ -13,17 +13,15 @@ OUTDIR=../results/Lee_200kb
 
 mkdir -p "$OUTDIR"
 
+# Using the flexible N-modality argument list:
 python ../spinmcia/spinmcia.py \
-  --sc_hic_h5ad_input_file "$SC_HIC" \
-  --second_modality_h5ad_input_file "$SECOND" \
+  --input_files "$SC_HIC" "$SECOND" \
+  --modality_names "HiC" "DNA_Methylation" \
   --output_folder "$OUTDIR" \
   --col_preproc_method colprofile \
   --block_preproc_method unit_var \
   --num_PCs 70 \
   --tol 1e-9 \
   --max_iter 5000 \
-  --deflationMethod block \
-  --mode dense \
-  --assume_same_order \
-  ## --threshold 0.9 \ ## use only if the data needs to drop columns   
-
+  --deflationMethod block
+  ## --thresholds 0.9 0.9 \ ## use only if the data needs to drop columns (pass one cutoff per modality)
