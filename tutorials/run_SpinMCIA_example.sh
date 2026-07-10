@@ -13,7 +13,7 @@ OUTDIR=../results/Lee_200kb
 
 mkdir -p "$OUTDIR"
 
-python SpinMCIA.py \
+python ../spinmcia/SpinMCIA.py \
   --sc_hic_h5ad_input_file "$SC_HIC" \
   --second_modality_h5ad_input_file "$SECOND" \
   --output_folder "$OUTDIR" \
