@@ -219,10 +219,8 @@ def nipals_multiblock(data_blocks, col_preproc_method="colprofile",
     for pc in range(2, num_PCs+1):
         print_flush(f"Deflating for PC {pc}...")
         if deflationMethod.lower()=="block":
-            # FIXED: Use the single latest block loading from 'res', not the concatenated history
             data_blocks = [deflate_block_bl(df, res['block_loadings'][i]) for i, df in enumerate(data_blocks)]
         else:
-            # FIXED: Use the single latest global score from 'res'
             data_blocks = [deflate_block_gs(df, res['global_scores']) for df in data_blocks]
 
 
