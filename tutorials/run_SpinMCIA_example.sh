@@ -23,5 +23,5 @@ python ../spinmcia/spinmcia.py \
   --num_PCs 70 \
   --tol 1e-9 \
   --max_iter 5000 \
-  --deflationMethod block
-  ## --thresholds 0.9 0.9 \ ## use only if the data needs to drop columns (pass one cutoff per modality)
+  --deflationMethod block \
+  --assume_same_order

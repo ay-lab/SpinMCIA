@@ -1,0 +1,26 @@
+[Init] Output directory: ../results/Lee_200kb
+[Load] Reading HiC from ./sample_data/Preprocessed_Sample_Data/Lee_200kb_scHiC.h5ad...
+[Load] Reading DNA_Methylation from ./sample_data/Preprocessed_Sample_Data/Lee_dna_methylation.h5ad...
+[Threshold] No filtering threshold applied to HiC.
+[Threshold] No filtering threshold applied to DNA_Methylation.
+[Align] --assume_same_order set with non-matching names. Overwriting all obs_names with shared cell_0, cell_1... indices.
+[Align] Cells used for NIPALS: 4,238
+[Align] Wrote cells_used.txt -> ../results/Lee_200kb/cells_used.txt
+[Main] Converting aligned AnnData to dense DataFrames...
+[Main] HiC DataFrame shape: (4238, 131952)
+[Main] DNA_Methylation DataFrame shape: (4238, 25612)
+[MCIA] Running SpinMCIA across 2 modalities...
+Performing column-level pre-processing...
+Column pre-processing completed.
+Performing block-level pre-processing...
+Block pre-processing completed.
+Computing order 1 scores...
+[nipals_iter] Iteration 0: stop_crit = 1.3299492633013251e-09
+[nipals_iter] Iteration 1: stop_crit = 0.03304367931837456
+[nipals_iter] Iteration 2: stop_crit = 0.013563815335561918
+[nipals_iter] Iteration 3: stop_crit = 0.0004441265233070882
+[nipals_iter] Iteration 4: stop_crit = 6.8728354544835e-05
+[nipals_iter] Iteration 5: stop_crit = 2.3998567355076883e-05
+[nipals_iter] Iteration 6: stop_crit = 1.0096070503610999e-05
+[nipals_iter] Iteration 7: stop_crit = 4.353223839258236e-06
+[nipals_iter] Iteration 8: stop_crit = 1.8827759997591675e-06
