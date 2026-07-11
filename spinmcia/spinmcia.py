@@ -274,7 +274,7 @@ def main():
     parser.add_argument("--max_iter", type=int, default=5000)
     parser.add_argument("--deflationMethod", default="block")
     parser.add_argument("--mode", default="dense", help="Legacy argument (ignored)")
-    parser.add_argument("--assume_same_order", action="store_true", help="Legacy argument (ignored, alignment is automatic)")
+    parser.add_argument("--assume_same_order", action="store_true", help="Skip cell ID matching and assume row index parity across files")
     args = parser.parse_args()
 
     # Determine input files and names
@@ -303,29 +303,40 @@ def main():
         df.name = mod_name
         data_blocks.append(df)
 
-    # 2. Strict Cell Alignment Engine
+    # 2. Cell Alignment Engine
     print_flush("\n[Main] =========================================")
-    print_flush("[Main] STARTING STRICT CELL ALIGNMENT")
-    print_flush("[Main] =========================================")
-    
-    common_cells = data_blocks[0].index
-    for i in range(1, len(data_blocks)):
-        common_cells = common_cells.intersection(data_blocks[i].index)
-    
-    common_cells = common_cells.sort_values()
-    print_flush(f"[Main] Found {len(common_cells)} perfectly matching cells across all {len(data_blocks)} modalities.")
-    
-    if len(common_cells) == 0:
-        print_flush("[ERROR] Zero common cells found! Check your cell IDs (obs_names).")
-        sys.exit(1)
+    if args.assume_same_order:
+        print_flush("[Main] STARTING CELL ALIGNMENT (ASSUME SAME ORDER)")
+        print_flush("[Main] =========================================")
+        print_flush("[Main] --assume_same_order flag detected! Skipping ID intersection.")
+        
+        first_len = data_blocks[0].shape[0]
+        for i in range(1, len(data_blocks)):
+            if data_blocks[i].shape[0] != first_len:
+                print_flush(f"[ERROR] --assume_same_order requires all files to have the exact same number of rows! {modality_names[0]} has {first_len}, but {modality_names[i]} has {data_blocks[i].shape[0]}.")
+                sys.exit(1)
+        print_flush(f"[Main] All {len(data_blocks)} modalities have exactly {first_len} rows. Proceeding without modification.\n")
+    else:
+        print_flush("[Main] STARTING STRICT CELL ALIGNMENT (INTERSECTION)")
+        print_flush("[Main] =========================================")
+        common_cells = data_blocks[0].index
+        for i in range(1, len(data_blocks)):
+            common_cells = common_cells.intersection(data_blocks[i].index)
+        
+        common_cells = common_cells.sort_values()
+        print_flush(f"[Main] Found {len(common_cells)} perfectly matching cells across all {len(data_blocks)} modalities.")
+        
+        if len(common_cells) == 0:
+            print_flush("[ERROR] Zero common cells found! Check your cell IDs (obs_names).")
+            sys.exit(1)
 
-    for i in range(len(data_blocks)):
-        original_size = data_blocks[i].shape[0]
-        mod_name = modality_names[i]
-        data_blocks[i] = data_blocks[i].loc[common_cells]
-        data_blocks[i].name = mod_name 
-        print_flush(f"   -> {mod_name} resized from {original_size} to {data_blocks[i].shape[0]} cells.")
-    print_flush("[Main] Alignment Complete.\n")
+        for i in range(len(data_blocks)):
+            original_size = data_blocks[i].shape[0]
+            mod_name = modality_names[i]
+            data_blocks[i] = data_blocks[i].loc[common_cells]
+            data_blocks[i].name = mod_name 
+            print_flush(f"   -> {mod_name} resized from {original_size} to {data_blocks[i].shape[0]} cells.")
+        print_flush("[Main] Alignment Complete.\n")
 
     metadata = pd.read_csv(args.metadata_file, index_col=0) if args.metadata_file else None
 
