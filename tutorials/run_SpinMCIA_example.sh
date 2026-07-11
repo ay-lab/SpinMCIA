@@ -6,8 +6,8 @@
 #SBATCH --mem=100g
 #SBATCH --cpus-per-task=8
 
-SC_HIC=./sample_data/Preprocessed_Data/Lee/200kb/lee_sc_hic_200kb_resolution.h5ad # add scHi-C path
-SECOND=./sample_data/Preprocessed_Data/Lee/200kb/lee_dna_methylation.h5ad # add second modality path 
+SC_HIC=./sample_data/Preprocessed_Data/Lee/200kb/Lee_sc_hic_200kb.h5ad # add scHi-C path
+SECOND=./sample_data/Preprocessed_Data/Lee/200kb/Lee_dna_methylation.h5ad # add second modality path 
 
 OUTDIR=../results/Lee_200kb
 
