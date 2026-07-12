@@ -1,3 +1,5 @@
 tutorials/sample_data/
-output_error
-results
+results/
+output_error/
+*.out
+*.err
