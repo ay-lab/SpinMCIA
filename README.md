@@ -53,7 +53,7 @@ All modalities must be provided to SpinMCIA as `.h5ad` files. The matrices must 
 
 To run the integration pipeline, please refer to the example bash script provided in the repository: 
 
-👉 **`/tutorials/run_SpinMCIA_example.sh`**
+**`/tutorials/run_SpinMCIA_example.sh`**
 
 This script provides a complete template for running the framework. To use it, simply update the file paths within the script to point to your downloaded `.h5ad` files and define your desired output directory. 
 
@@ -76,13 +76,13 @@ SpinMCIA generates several `.csv` files inside your specified output folder (the
 We provide three dedicated Jupyter Notebook tutorials in the `/tutorials/` directory, tailored to whether you are running the pipeline from scratch, using pre-computed embeddings, or looking for a general template to apply to your own datasets:
 
 * **1. For Freshly Generated Results (Lee 200kb Example):**
-  👉 **`/tutorials/Post_SpinMCIA_Run_Tutorial_for_lee_200kb_with_umap_and_downstream_analysis_tutorial_post_spinmcia_run.ipynb`**
+  **`/tutorials/Post_SpinMCIA_Run_Tutorial_for_lee_200kb_with_umap_and_downstream_analysis_tutorial_post_spinmcia_run.ipynb`**
   Use this notebook if you just executed `run_SpinMCIA_example.sh` and want to analyze your newly generated Lee 200kb integration outputs (e.g., generating UMAPs, calculating clustering metrics, and mapping cell types).
 
 * **2. For Pre-Computed Embeddings (Lee 200kb Example):**
-  👉 **`/tutorials/Provided_SpinMCIA_Embeddings_Tutorial_for_lee_200kb_with_umap_and_downstream_analysis_tutorial.ipynb`**
+  **`/tutorials/Provided_SpinMCIA_Embeddings_Tutorial_for_lee_200kb_with_umap_and_downstream_analysis_tutorial.ipynb`**
   Use this notebook if you want to skip running the integration script and jump straight into analyzing our pre-computed Lee 200kb embeddings (downloaded from Zenodo).
 
 * **3. General Downstream Template (For Any Dataset):**
-  👉 **`/tutorials/sample_tutorial_without_any_paths.ipynb`**
+  **`/tutorials/sample_tutorial_without_any_paths.ipynb`**
   A generalized, path-free template designed to teach you the mechanics of SpinMCIA downstream analysis (UMAP visualization, ARI/NMI clustering metrics, etc.). You can easily plug in any newly generated results or pre-computed embeddings into this template to analyze your own custom data.
