@@ -13,7 +13,7 @@ We highly recommend using `conda` to create an isolated virtual environment for 
     conda activate spinmcia_env
     
     # Clone the repository
-    git clone https://github.com/[your-username]/SpinMCIA.git
+    git clone https://github.com/ay-lab/SpinMCIA.git
     cd SpinMCIA
     
     # Install the required dependencies
@@ -21,9 +21,9 @@ We highly recommend using `conda` to create an isolated virtual environment for 
 
 ## 2. Data Availability
 
-Due to file size constraints, sample data is **not** hosted on GitHub. All preprocessed data and pre-computed SpinMCIA outputs are hosted on our [Zenodo Repository (Link to be added)]. You can download this data and place it into any local directory on your machine.
+Due to file size constraints, sample data is **not** hosted on GitHub. All preprocessed data and pre-computed SpinMCIA outputs are hosted on https://spinmcia.lji.org/data. You can download this data and place it into any local directory on your machine.
 
-The Zenodo repository contains two primary directories:
+The download .zip folders contain two primary directories:
 * **`Preprocessed_Data/`**: Ready-to-use `.h5ad` files for various datasets.
 * **`SpinMCIA_Downstream_Results/`**: Pre-computed SpinMCIA outputs for users who wish to skip the integration step and proceed directly to downstream analysis.
 
