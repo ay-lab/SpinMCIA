@@ -23,9 +23,23 @@ We highly recommend using `conda` to create an isolated virtual environment for 
 
 Due to file size constraints, sample data is **not** hosted on GitHub. All preprocessed data and pre-computed SpinMCIA outputs are hosted on https://spinmcia.lji.org/data. You can download this data and place it into any local directory on your machine.
 
-The download .zip folders contain two primary directories:
-* **`Preprocessed_Data/`**: Ready-to-use `.h5ad` files for various datasets.
-* **`SpinMCIA_Downstream_Results/`**: Pre-computed SpinMCIA outputs for users who wish to skip the integration step and proceed directly to downstream analysis.
+The download `.zip` folders contain two primary directories organized to seamlessly support both *de novo* integration and immediate downstream analysis:
+
+*   **`preprocessed_data/`**: Contains ready-to-use `.h5ad` files, feature masks, and metadata required to run the pipeline.
+    *   **Resolution Subdirectories (e.g., `100kb/`, `200kb/`, `500kb/`, `1Mb/`):**
+        *   **scHi-C AnnData (`*_scHiC.h5ad`):** The preprocessed single-cell Hi-C contact matrices formatted specifically for that genomic resolution.
+        *   **Feature Masks (`*_kept_features.npy`):** Available for datasets where sparse columns or bins were filtered out during preprocessing. These arrays are critical during downstream analysis to accurately map the integrated mathematical components back to their original genomic coordinates.
+    *   **Secondary Modality Data (e.g., `*_dna_methylation.h5ad`):** The processed count/methylation matrices for the paired omic modality.
+    *   **Secondary Feature Masks (`*_kept_features.npy`):** Tracks the retained genomic features for the secondary modality.
+    *   **Metadata (`*_metadata.csv`):** Contains the essential cell-level annotations, including cell type labels, used for downstream benchmarking and visualization.
+
+*   **`SpinMCIA_Downstream_Results/`**: Contains pre-computed SpinMCIA outputs for users who wish to skip running SpinMCIA on the provided data and proceed directly to downstream analysis. 
+    *   **Resolution Subdirectories (e.g., `100kb/`, `200kb/`, `500kb/`, `1Mb/`):** Each folder mirrors the preprocessed resolutions and contains the exact mathematical outputs of the SpinMCIA pipeline:
+        *   **Global Outputs (`global_scores.csv`, `global_loadings.csv`):** The final joint embeddings representing the consensus across modalities. The global scores are used directly for UMAP generation and clustering.
+        *   **Modality-Specific Scores (`block_scores_*.csv`):** The low-dimensional representations projected specifically for the scHi-C or secondary modality.
+        *   **Feature Loadings (`block_loadings_*.csv`):** The matrix weights that map the embeddings back to the original features. Used in tandem with the `kept_features.npy` arrays to identify the specific genomic loci or contacts driving cell-type identity.
+        *   **Metrics & Diagnostics (`block_variances.csv`, `eigvals.csv`, `block_score_weights.csv`):** Statistical outputs detailing the variance explained and modality weighting within the integration.
+        *   **Cell Index (`cells_used.txt`):** A list of cell indices retained in the final integration, ensuring alignment with the original metadata.
 
 ## 3. Understanding the Input Data
 
@@ -81,7 +95,7 @@ We provide three dedicated Jupyter Notebook tutorials in the `/tutorials/` direc
 
 * **2. For Pre-Computed Embeddings (Lee 200kb Example):**
   **`/tutorials/Provided_SpinMCIA_Embeddings_Tutorial_for_lee_200kb_with_umap_and_downstream_analysis_tutorial.ipynb`**
-  Use this notebook if you want to skip running the integration script and jump straight into analyzing our pre-computed Lee 200kb embeddings (downloaded from Zenodo).
+  Use this notebook if you want to skip running the integration script and jump straight into analyzing our pre-computed Lee 200kb embeddings (downloaded from https://spinmcia.lji.org/data).
 
 * **3. General Downstream Template (For Any Dataset):**
   **`/tutorials/sample_tutorial_without_any_paths.ipynb`**
