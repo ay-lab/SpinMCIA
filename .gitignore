@@ -3,3 +3,4 @@ results/
 output_error/
 *.out
 *.err
+refmap_cache/
