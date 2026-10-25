@@ -1,5 +1,7 @@
 # SpinMCIA: Multimodal Integration of scHi-C Data
 
+[![DOI](https://zenodo.org/badge/1277394605.svg)](https://doi.org/10.5281/zenodo.23633665)
+
 SpinMCIA is a robust framework designed for the integration of single-cell High-throughput Chromatin Conformation Capture (scHi-C) with other single-cell omics modalities (e.g., RNA-seq, DNA Methylation, ATAC-seq). 
 
 This repository contains the source code, execution scripts, and downstream analysis tutorials required to run SpinMCIA on highly sparse, multidimensional genomic data.
